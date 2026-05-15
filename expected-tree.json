@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "pm": "bun",
+  "pm_version_tested": "1.1.30",
+  "source_file": "bun.lock",
+  "generated_at": "2026-05-15T00:00:00+00:00",
+  "root": {
+    "name": "bun-manifest-metadata-probe",
+    "version": "0.1.0",
+    "dependencies": [
+      "hono",
+      "is-odd"
+    ]
+  },
+  "packages": {
+    "hono": {
+      "version": "4.12.18",
+      "source": "registry",
+      "group": "main",
+      "declared_constraint": "^4.12.0",
+      "dependencies": [],
+      "source_detail": {
+        "registry": "https://registry.npmjs.org"
+      }
+    },
+    "is-odd": {
+      "version": "3.0.1",
+      "source": "registry",
+      "group": "main",
+      "declared_constraint": "^3.0.0",
+      "bundled": true,
+      "dependencies": [
+        "is-number"
+      ],
+      "source_detail": {
+        "registry": "https://registry.npmjs.org"
+      }
+    },
+    "is-number": {
+      "version": "6.0.0",
+      "source": "registry",
+      "group": "main",
+      "declared_constraint": null,
+      "dependencies": [],
+      "source_detail": {
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "project_metadata": {
+    "private": true,
+    "engines": {
+      "bun": ">=1.1.0",
+      "node": ">=20.0.0"
+    },
+    "bundle_dependencies": ["is-odd"],
+    "workspaces_nohoist": ["**/react-native", "**/react-native/**"]
+  },
+  "warnings": [
+    "D6 (engines.bun/node): These are metadata-only fields. Mend MUST NOT treat them as dependency blocks or generate phantom library entries for 'bun' or 'node'. They should round-trip into project_metadata only. Failure mode: parser mistakes engines values for dep versions, generating false-positive deps named 'bun' and 'node'.",
+    "D7 (private: true): Application-project marker. Has no effect on the dependency tree shape. Mend MUST still detect and report all deps regardless of this field. Failure mode: parser short-circuits on private:true and returns an empty tree (treating it as 'nothing to publish, skip scanning').",
+    "D8 (bundleDependencies: ['is-odd']): is-odd is listed for tar-bundling on publish, but it remains a normal resolved dependency in the lockfile. Mend MUST include is-odd in the tree. Failure mode: parser treats bundleDependencies as an exclusion list and drops is-odd, causing a false negative. Additionally, is-number (transitive via is-odd) would also be lost.",
+    "D9 (workspaces.nohoist): Bun parses but currently ignores the nohoist array at install time. The workspaces field uses the OBJECT form ({packages, nohoist}) rather than the ARRAY shorthand. Failure mode (parser): parser expects workspaces to be an array and crashes on the object form, breaking tree extraction for the entire project. Failure mode (behavior): Mend propagates nohoist semantics and hoists packages differently than expected.",
+    "workspaces OBJECT form: This probe uses { 'packages': ['packages/*'], 'nohoist': [...] } instead of the simpler string-array shorthand. A parser that expects only the array form will either crash or ignore the workspaces declaration entirely.",
+    "Bun is NOT in the Mend install-tool list. Detection is lockfile-driven only (bun.lock JSONC parsing). scanSettings.versioning cannot pin a Bun toolchain. No .whitesource file is emitted with this probe.",
+    "All four metadata fields (engines, private, bundleDependencies, workspaces.nohoist) appear ONLY in package.json, not in bun.lock. Mend must cross-read package.json for project_metadata while using bun.lock for dependency resolution.",
+    "The packages/ directory exists but contains no workspace members. This is valid — the workspaces glob 'packages/*' simply matches nothing. Parsers that require at least one workspace member to parse the root will falsely skip the root manifest."
+  ]
+}

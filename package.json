@@ -1,0 +1,19 @@
+{
+  "name": "bun-manifest-metadata-probe",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Probe for manifest metadata fields D6-D9: engines.bun/node, private:true, bundleDependencies, workspaces.nohoist",
+  "engines": {
+    "bun": ">=1.1.0",
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "hono": "^4.12.0",
+    "is-odd": "^3.0.0"
+  },
+  "bundleDependencies": ["is-odd"],
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": ["**/react-native", "**/react-native/**"]
+  }
+}

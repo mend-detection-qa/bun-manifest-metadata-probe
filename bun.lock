@@ -1,0 +1,58 @@
+// Bun lockfile — text JSONC format (Bun 1.2+).
+// Generated for probe: bun-manifest-metadata-probe.
+// Pattern bundle: D6 (engines.bun/node) + D7 (private:true) + D8 (bundleDependencies) + D9 (workspaces.nohoist).
+//
+// MANIFEST METADATA NOTES:
+//   D6 engines.bun/node  — metadata-only fields; no effect on dependency resolution or lockfile structure.
+//   D7 private: true     — prevents accidental publish; no effect on tree shape.
+//   D8 bundleDependencies: ["is-odd"]  — is-odd is tar-bundled with this package on publish,
+//                                         but MUST still appear in the dep tree (it is still a dep).
+//   D9 workspaces.nohoist: [...]       — Bun parses this field but currently ignores it at install time.
+//                                         Using the OBJECT form of "workspaces" (not the array shorthand).
+//
+// Dependency graph:
+//   Direct deps (from dependencies{}):
+//     hono@4.12.18     — no runtime deps
+//     is-odd@3.0.1     — requires is-number@^6.0.0
+//   Transitives:
+//     is-number@6.0.0  — no deps (required by is-odd@3.0.1)
+//
+// The metadata fields (engines, private, bundleDependencies, workspaces.nohoist) do NOT
+// appear in the lockfile body — they live only in package.json. The lockfile records
+// the workspaces declaration but ignores nohoist and engines.
+{
+  "lockfileVersion": 1,
+
+  // workspaces: root-only project.
+  // Bun records the "packages" glob from the workspaces object; no actual workspace members exist.
+  // The "nohoist" array is parsed by Bun but not recorded in the lockfile.
+  "workspaces": {
+    "": {
+      "name": "bun-manifest-metadata-probe",
+      // D8: bundleDependencies lists is-odd — Bun records the dep normally in the lockfile.
+      // The tar-bundling behavior is publish-time only; the dep tree is unaffected.
+      "dependencies": {
+        "hono": "^4.12.0",
+        "is-odd": "^3.0.0",
+      },
+    },
+  },
+
+  "packages": {
+
+    // Direct dep: hono — Bun-native HTTP framework, no runtime deps.
+    "hono": ["hono@4.12.18", {}, "sha512-RWzP96k/yv0PQfyXnWjs6zot20TqfpfsNXhOnev8d1InAxubW93L11/oNUc3tQqn2G0bSdAOBpX+2uDFHV7kdQ=="],
+
+    // Direct dep: is-odd — listed in bundleDependencies but still a normal lockfile entry.
+    // If Mend drops is-odd because of bundleDependencies, that is the failure mode (D8).
+    "is-odd": ["is-odd@3.0.1", {
+      "dependencies": {
+        "is-number": "^6.0.0",
+      },
+    }, "sha512-CQpnWPrDwmP1+SMHXZhtLtJv90yiyVfluGsX5iNCVkrhQtU3TQHsUWPG9wkdk9Lgd5yNpAg9jQEo90CBaXgWMA=="],
+
+    // Transitive dep of is-odd@3.0.1.
+    "is-number": ["is-number@6.0.0", {}, "sha512-Wu1VHeILBK8KAWJUAiSZQX94GmOE45Rg6/538fKwiloUu21KncEkYGPqob2oSZ5mUT73vLGrHQjKw3KMPwfDzg=="],
+
+  },
+}
